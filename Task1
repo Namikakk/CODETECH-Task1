@@ -1,0 +1,55 @@
+import re
+
+def assess_password_strength(password):
+    length_score = calculate_length_score(password)
+    complexity_score = calculate_complexity_score(password)
+    uniqueness_score = calculate_uniqueness_score(password)
+
+    overall_score = (length_score + complexity_score + uniqueness_score) / 3
+
+    strength_rating = determine_strength_rating(overall_score)
+
+    return strength_rating
+
+def calculate_length_score(password):
+    length = len(password)
+    min_length = 8  # Example minimum length requirement
+    if length >= min_length:
+        return 2  # Maximum score for length
+    else:
+        return length / min_length
+
+def calculate_complexity_score(password):
+    complexity_score = 0
+    # Check if password contains uppercase letters, lowercase letters, digits, and special characters
+    if re.search(r'[A-Z]', password):
+        complexity_score += 1
+    if re.search(r'[a-z]', password):
+        complexity_score += 1
+    if re.search(r'\d', password):
+        complexity_score += 1
+    if re.search(r'[\W_]', password):  # Special characters and underscores
+        complexity_score += 1
+
+    return complexity_score
+
+def calculate_uniqueness_score(password):
+    common_passwords = ['password', '123456', 'qwerty', 'letmein']  # Example list of common passwords
+    if password.lower() in common_passwords:
+        return 0  # Penalize common passwords
+    else:
+        return 2  # Maximum score for uniqueness
+
+def determine_strength_rating(score):
+    if score >= 2.0:
+        return "Strong"
+    elif score >= 1.0:
+        return "Moderate"
+    else:
+        return "Weak"
+
+# Example of using the password assessment tool
+if __name__ == "__main__":
+    password = input("Enter your password: ")
+    strength_rating = assess_password_strength(password)
+    print(f"Password Strength: {strength_rating}")
